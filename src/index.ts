@@ -4,6 +4,18 @@
 import clone from 'plain-object-clone';
 import * as isPrimitive from 'is-primitive';
 
+const ILLEGAL_KEYS = new Set(["prototype", "constructor", "__proto__"]);
+
+function isIllegalKey(key: string): Boolean {
+  return ILLEGAL_KEYS.has(key);
+}
+
+function disallowProtopath(key: string): void {
+  if (isIllegalKey(key)) {
+    throw new Error("Unsafe key encountered: " + key)
+  }
+}
+
 /* MERGE */
 
 function merge ( objects: any[] ) {
@@ -23,6 +35,7 @@ function merge ( objects: any[] ) {
 function mergeObjects ( target, source ) {
 
   for ( const key in source ) {
+    disallowProtopath(key);
 
     const value = source[key];
 
