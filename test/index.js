@@ -15,4 +15,8 @@ describe ( 'Plain Object Merge', it => {
 
   });
 
+  it('disallows prototype pollution', t => {
+    t.throws(() => merge([{}, JSON.parse('{"__proto__": {"polluted": true}}')]))
+  })
+
 });
